@@ -27,4 +27,30 @@
     
     <cache name="com.crsms.domain.User"
            maxElementsInMemory="1000"/>
+           
+            <cache name="roles"
+           timeToLiveSeconds="60"
+           maxElementsInMemory="1000"
+           eternal="false"
+           overflowToDisk="false"
+           maxElementsOnDisk="10000000"
+           diskPersistent="false"
+           diskExpiryThreadIntervalSeconds="1"
+           memoryStoreEvictionPolicy="LRU"/>
+    
+    <cache name="com.crsms.domain.Role"
+           maxElementsInMemory="1000"/>
+           
+              <cache name="userinfo"
+           timeToLiveSeconds="60"
+           maxElementsInMemory="1000"
+           eternal="false"
+           overflowToDisk="false"
+           maxElementsOnDisk="10000000"
+           diskPersistent="false"
+           diskExpiryThreadIntervalSeconds="1"
+           memoryStoreEvictionPolicy="LRU"/>
+    
+    <cache name="com.crsms.domain.UserInfo"
+           maxElementsInMemory="1000"/>
 </ehcache>
