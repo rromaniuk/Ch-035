@@ -14,6 +14,7 @@
 		<postgresql.version>9.4-1201-jdbc4</postgresql.version>
 		<hibernate.version>5.0.2.Final</hibernate.version>
 		<hibernate-validator.version>5.2.2.Final</hibernate-validator.version>
+		<testng.version>6.1.1</testng.version>
 	</properties>
 
 	<dependencies>
@@ -50,7 +51,7 @@
 			<version>${spring.version}</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<!-- Hibenate -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -79,8 +80,6 @@
 			<artifactId>postgresql</artifactId>
 			<version>${postgresql.version}</version>
 		</dependency>
-		
-
 
 
 		<dependency>
@@ -101,10 +100,19 @@
 			<version>1.2</version>
 		</dependency>
 
-
-
-
-
+		<!--Test -->
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>${testng.version}</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>junit</artifactId>
+					<groupId>junit</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

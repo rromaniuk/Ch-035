@@ -9,9 +9,9 @@ public interface UserRepository {
 
 	User save(User user);
 		
-	boolean delete(int id);
+	boolean delete(Long id);
 
-	User get(int id);
+	User getById(Long id);
 		
 	User getByEmail(String email);
 		

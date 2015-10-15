@@ -25,6 +25,6 @@
            diskExpiryThreadIntervalSeconds="1"
            memoryStoreEvictionPolicy="LRU"/>
     
-    <cache name="edu.academy.model.User"
+    <cache name="com.crsms.domain.User"
            maxElementsInMemory="1000"/>
 </ehcache>

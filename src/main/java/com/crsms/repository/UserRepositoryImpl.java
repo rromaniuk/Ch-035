@@ -19,7 +19,7 @@ public class UserRepositoryImpl implements UserRepository {
 	@Override
 	@Transactional
 	public User save(User user) {
-		if (user.getId()==null) {
+		if (user.getId() == null) {
 			em.persist(user);
 		} else {
 			em.merge(user);
@@ -29,20 +29,19 @@ public class UserRepositoryImpl implements UserRepository {
 
 	@Override
 	@Transactional
-	public boolean delete(int id) {
-
+	public boolean delete(Long id) {
 		return em.createNamedQuery(User.DELETE).setParameter("id", id)
 				.executeUpdate() != 0;
 	}
 
 	@Override
-	public User get(int id) {
+	public User getById(Long id) {
 		return em.find(User.class, id);
 	}
 
 	@Override
 	public User getByEmail(String email) {
-		return em.createNamedQuery(User.BY_EMAIL, User.class)
+		return em.createNamedQuery(User.GET_BY_EMAIL, User.class)
 				.setParameter("email", email).getSingleResult();
 	}
 
