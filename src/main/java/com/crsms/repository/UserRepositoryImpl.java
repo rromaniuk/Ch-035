@@ -1,52 +1,58 @@
 package com.crsms.repository;
 
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.crsms.domain.User;
 
 @Repository
-@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
-public class UserRepositoryImpl implements UserRepository {
+public class UserRepositoryImpl implements UserRepository{
+	 public UserRepositoryImpl() {
+	
+	}
+	
+	@Autowired
+	private SessionFactory sessionFactory;
 
-	@PersistenceContext
-	private EntityManager em;
+	// protected Session getSession() {
+	// return sessionFactory.getCurrentSession();
+	// }
 
 	@Override
-	@Transactional
 	public User save(User user) {
 		if (user.getId() == null) {
-			em.persist(user);
+			sessionFactory.getCurrentSession().persist(user);
 		} else {
-			em.merge(user);
+			sessionFactory.getCurrentSession().merge(user);
 		}
 		return user;
 	}
 
 	@Override
-	@Transactional
-	public boolean delete(Long id) {
-		return em.createNamedQuery(User.DELETE).setParameter("id", id)
-				.executeUpdate() != 0;
+	public void delete(Long id) {
+		// Query query = session.getNamedQuery(User.DELETE)
+		sessionFactory.getCurrentSession().getNamedQuery(User.DELETE).setParameter("id", id)
+				.executeUpdate();
 	}
 
 	@Override
 	public User getById(Long id) {
-		return em.find(User.class, id);
+		return sessionFactory.getCurrentSession().get(User.class, id);
 	}
 
 	@Override
 	public User getByEmail(String email) {
-		return em.createNamedQuery(User.GET_BY_EMAIL, User.class)
-				.setParameter("email", email).getSingleResult();
+		return (User) sessionFactory.getCurrentSession().getNamedQuery(User.GET_BY_EMAIL).setParameter(
+				"email", email);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<User> getAll() {
-		return em.createNamedQuery(User.GET_ALL, User.class).getResultList();
+		return sessionFactory.getCurrentSession().getNamedQuery(User.GET_ALL).list();
 	}
 }

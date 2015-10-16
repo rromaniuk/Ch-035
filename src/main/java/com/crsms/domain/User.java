@@ -1,5 +1,8 @@
 package com.crsms.domain;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
@@ -12,6 +15,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -20,6 +24,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
+
+import com.crsms.domain.Role;
 
 @Entity
 @Access(AccessType.FIELD)
@@ -39,6 +45,7 @@ public class User {
 	public static final String GET_BY_EMAIL = "User.getByEmail";
 	public static final String GET_ALL = "User.getAll";
 	public static final String GET_BY_ID = "User.getById";
+	
 
 	@Id
 	@GeneratedValue
@@ -48,11 +55,15 @@ public class User {
 	@Email
 	@NotEmpty
 	private String email;
+	
 
 	@Column(name = "password", nullable = false)
 	@NotEmpty
 	@Length(min = 6)
 	private String password;
+	
+	@Column(name = "enabled", nullable = false)
+	private boolean enabled;
 
 	@NotEmpty
 	@OneToOne(fetch = FetchType.EAGER)
@@ -61,13 +72,13 @@ public class User {
 	private UserInfo userInfo;
 
 	@NotEmpty
-	@ManyToOne(fetch = FetchType.EAGER)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy="user")
 	@JoinColumn(name = "role_id")
 	@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-	private Role role;
+	private Set<Role> role = new HashSet<Role>();
 
 	public User() {
-		super();
+	
 	}
 
 	public Long getId() {
@@ -94,6 +105,14 @@ public class User {
 		this.password = password;
 	}
 
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
 	public UserInfo getUserInfo() {
 		return userInfo;
 	}
@@ -102,14 +121,14 @@ public class User {
 		this.userInfo = userInfo;
 	}
 
-	public Role getRole() {
-		return role;
+	public Set<Role> getRole() {
+		return this.role;
 	}
 
-	public void setRole(Role role) {
+	public void setRole(Set<Role> role) {
 		this.role = role;
 	}
-
+	
 	@Override
 	public String toString() {
 		return "User{" + ", id: " + getId() + ", email: " + getEmail()

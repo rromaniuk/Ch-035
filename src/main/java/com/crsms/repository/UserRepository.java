@@ -9,7 +9,7 @@ public interface UserRepository {
 
 	User save(User user);
 		
-	boolean delete(Long id);
+	void delete(Long id);
 
 	User getById(Long id);
 		
