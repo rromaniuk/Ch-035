@@ -38,6 +38,7 @@ public class MainController {
 
 		return model;
 
+		
 	}
 
 	@RequestMapping(value = "/login", method = RequestMethod.GET)

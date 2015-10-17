@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -34,18 +35,17 @@ import com.crsms.domain.Role;
 		@NamedQuery(name = User.DELETE, query = "DELETE FROM User u "
 				+ "WHERE u.id= :id"),
 		@NamedQuery(name = User.GET_BY_EMAIL, query = "SELECT u FROM User u "
-				+ "LEFT JOIN FETCH u.role LEFT JOIN FETCH u.userInfo WHERE u.email= :email"),
+				+ "LEFT JOIN FETCH u.roles LEFT JOIN FETCH u.userInfo WHERE u.email= :email"),
 		@NamedQuery(name = User.GET_BY_ID, query = "SELECT u FROM User u "
-				+ "LEFT JOIN FETCH u.role LEFT JOIN FETCH u.userInfo WHERE u.id= :id ORDER BY u.id"),
+				+ "LEFT JOIN FETCH u.roles LEFT JOIN FETCH u.userInfo WHERE u.id= :id ORDER BY u.id"),
 		@NamedQuery(name = User.GET_ALL, query = "SELECT u FROM User u "
-				+ "LEFT JOIN FETCH u.role LEFT JOIN FETCH u.userInfo ORDER BY u.email") })
+				+ "LEFT JOIN FETCH u.roles LEFT JOIN FETCH u.userInfo ORDER BY u.email") })
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class User {
 	public static final String DELETE = "User.delete";
 	public static final String GET_BY_EMAIL = "User.getByEmail";
 	public static final String GET_ALL = "User.getAll";
 	public static final String GET_BY_ID = "User.getById";
-	
 
 	@Id
 	@GeneratedValue
@@ -55,13 +55,12 @@ public class User {
 	@Email
 	@NotEmpty
 	private String email;
-	
 
 	@Column(name = "password", nullable = false)
 	@NotEmpty
 	@Length(min = 6)
 	private String password;
-	
+
 	@Column(name = "enabled", nullable = false)
 	private boolean enabled;
 
@@ -72,13 +71,15 @@ public class User {
 	private UserInfo userInfo;
 
 	@NotEmpty
-	@OneToMany(fetch = FetchType.EAGER, mappedBy="user")
-	@JoinColumn(name = "role_id")
+	@ManyToMany
+	@JoinTable(name = "user_roles", joinColumns = { 
+			@JoinColumn(name = "user_id", referencedColumnName = "id") }, 
+			inverseJoinColumns = {@JoinColumn(name = "role_id", 
+								referencedColumnName = "id") })
 	@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-	private Set<Role> role = new HashSet<Role>();
+	private Set<Role> roles = new HashSet<Role>();
 
 	public User() {
-	
 	}
 
 	public Long getId() {
@@ -122,13 +123,13 @@ public class User {
 	}
 
 	public Set<Role> getRole() {
-		return this.role;
+		return this.roles;
 	}
 
-	public void setRole(Set<Role> role) {
-		this.role = role;
+	public void addRole(Role role) {
+		roles.add(role);
 	}
-	
+
 	@Override
 	public String toString() {
 		return "User{" + ", id: " + getId() + ", email: " + getEmail()

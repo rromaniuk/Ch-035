@@ -11,9 +11,6 @@ import com.crsms.domain.User;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository{
-	 public UserRepositoryImpl() {
-	
-	}
 	
 	@Autowired
 	private SessionFactory sessionFactory;

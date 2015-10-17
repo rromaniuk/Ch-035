@@ -15,10 +15,6 @@ import java.util.List;
 @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 public class UserServiceImpl implements UserService {
 
-	public UserServiceImpl() {
-
-	}
-
 	@Autowired
 	private UserRepository repository;
 

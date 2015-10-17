@@ -1,5 +1,8 @@
 package com.crsms.domain;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
@@ -8,6 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -28,9 +32,8 @@ public class Role {
 	@Column(name = "name", nullable = false)
 	private String name;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", nullable = false)
-	private User user;
+	@ManyToMany(mappedBy = "roles")
+	private Set<User> users = new HashSet<>();
 	
 	
 	public Role() {
@@ -52,12 +55,12 @@ public class Role {
 		this.name = name;
 	}
 	
-	public User getUser() {
-		return user;
+	public Set<User> getUser() {
+		return users;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void addUser(User user) {
+		users.add(user);
 	}
 
 

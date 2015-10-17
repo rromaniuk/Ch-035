@@ -15,6 +15,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBuilder;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
@@ -30,24 +31,22 @@ import com.crsms.service.UserServiceImpl;
 @EnableTransactionManagement
 @ComponentScan({ "com.crsms.*" })
 @PropertySource(value = { "classpath:db/postgresql.properties" })
-@Import({ SecurityConfig.class })
+@Import({ SecurityConfig.class, SpringWebAppInitializer.class })
+
 public class ApplicationContextConfig {
 
-	
 	@Autowired
 	private Environment environment;
 
-
-	@Autowired
 	@Bean(name = "sessionFactory")
-    public SessionFactory sessionFactory() {
-        LocalSessionFactoryBuilder builder = new LocalSessionFactoryBuilder(dataSource());
-        builder
-        	.scanPackages("com.crsms.domain")
-            .addProperties(hibernateProperties());
+	public SessionFactory sessionFactory() {
+		LocalSessionFactoryBuilder builder = new LocalSessionFactoryBuilder(
+				dataSource());
+		builder.scanPackages("com.crsms.domain").addProperties(
+				hibernateProperties());
 
-        return builder.buildSessionFactory();
-    }
+		return builder.buildSessionFactory();
+	}
 
 	@Bean(name = "dataSource")
 	public DataSource dataSource() {
@@ -55,10 +54,10 @@ public class ApplicationContextConfig {
 		dataSource.setDriverClassName(environment
 				.getRequiredProperty("database.driverClassName"));
 		dataSource.setUrl(environment.getRequiredProperty("database.url"));
-		dataSource
-				.setUsername(environment.getRequiredProperty("database.username"));
-		dataSource
-				.setPassword(environment.getRequiredProperty("database.password"));
+		dataSource.setUsername(environment
+				.getRequiredProperty("database.username"));
+		dataSource.setPassword(environment
+				.getRequiredProperty("database.password"));
 		return dataSource;
 	}
 
@@ -70,18 +69,24 @@ public class ApplicationContextConfig {
 				environment.getRequiredProperty("hibernate.show_sql"));
 		properties.put("hibernate.format_sql",
 				environment.getRequiredProperty("hibernate.format_sql"));
+		properties.put("hibernate.use_sql_comments",
+				environment.getRequiredProperty("hibernate.use_sql_comments"));
+		properties.put("hibernate.cache.use_second_level_cache", 
+				environment.getRequiredProperty("hibernate.cache.use_second_level_cache"));
+		properties.put("hibernate.cache.region.factory_class", 
+				environment.getRequiredProperty("hibernate.cache.region.factory_class"));
 		properties.put("hibernate.hbm2ddl.auto",
 				environment.getRequiredProperty("hibernate.hbm2ddl.auto"));
 		return properties;
 	}
+	
 
-	@Bean(name = "transactionManager")
-	public HibernateTransactionManager transactionManager(SessionFactory sessionFactory) {
-		HibernateTransactionManager transactionManager = new HibernateTransactionManager();
-		transactionManager.setSessionFactory(sessionFactory);
-		return transactionManager;
+	@Bean
+	public HibernateTransactionManager txManager() {
+		return new HibernateTransactionManager(sessionFactory());
 	}
-	@Bean(name = "viewResolver")
+
+	@Bean
 	public InternalResourceViewResolver viewResolver() {
 		InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
 		viewResolver.setViewClass(JstlView.class);
@@ -89,6 +94,4 @@ public class ApplicationContextConfig {
 		viewResolver.setSuffix(".jsp");
 		return viewResolver;
 	}
-	
-	
-	}
+}
