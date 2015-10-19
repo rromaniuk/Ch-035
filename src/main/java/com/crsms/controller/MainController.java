@@ -21,8 +21,8 @@ public class MainController {
 	public ModelAndView defaultPage() {
 
 		ModelAndView model = new ModelAndView();
-		model.addObject("title", "Spring Security + Hibernate Example");
-		model.addObject("message", "This is default page!");
+		model.addObject("title", "Main page");
+		model.addObject("message", "default page for all users!");
 		model.setViewName("hello");
 		return model;
 
@@ -32,8 +32,8 @@ public class MainController {
 	public ModelAndView adminPage() {
 
 		ModelAndView model = new ModelAndView();
-		model.addObject("title", "Spring Security + Hibernate Example");
-		model.addObject("message", "This page is for ROLE_ADMIN only!");
+		model.addObject("title", "Admin page");
+		model.addObject("message", "This page is for ADMIN only!");
 		model.setViewName("admin");
 
 		return model;
@@ -66,11 +66,11 @@ public class MainController {
 
 		String error = "";
 		if (exception instanceof BadCredentialsException) {
-			error = "Invalid username and password!";
+			error = "Invalid e-mail or password!";
 		} else if (exception instanceof LockedException) {
 			error = exception.getMessage();
 		} else {
-			error = "Invalid username and password!";
+			error = "Invalid e-mail or password!";
 		}
 
 		return error;

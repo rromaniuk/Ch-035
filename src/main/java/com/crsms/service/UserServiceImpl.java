@@ -1,9 +1,12 @@
 package com.crsms.service;
 
+import com.crsms.config.SpringMain;
 import com.crsms.domain.User;
 import com.crsms.repository.UserRepository;
 import com.crsms.util.NotFoundException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -14,6 +17,7 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 public class UserServiceImpl implements UserService {
+	private static final Logger LOG = LoggerFactory.getLogger(SpringMain.class);
 
 	@Autowired
 	private UserRepository repository;

@@ -29,9 +29,9 @@ public class MyUserDetailsService implements UserDetailsService {
 
 	@Transactional(readOnly = true)
 	@Override
-	public UserDetails loadUserByUsername(final String username)
+	public UserDetails loadUserByUsername(final String email)
 			throws UsernameNotFoundException {
-		com.crsms.domain.User user = repository.getByEmail(username);
+		com.crsms.domain.User user = repository.getByEmail(email);
 		List<GrantedAuthority> authorities = buildUserAuthority(user.getRole());
 		return buildUserForAuthentication(user, authorities);
 	}

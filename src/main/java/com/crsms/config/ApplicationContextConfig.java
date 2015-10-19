@@ -14,39 +14,34 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
-import org.springframework.orm.hibernate4.LocalSessionFactoryBuilder;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
-import org.springframework.web.servlet.view.JstlView;
 
-import com.crsms.repository.UserRepository;
-import com.crsms.repository.UserRepositoryImpl;
-import com.crsms.service.UserService;
-import com.crsms.service.UserServiceImpl;
 
-@EnableWebMvc
+
+//@EnableWebMvc is turned off for console debug only!!!
+//@EnableWebMvc
 @Configuration
+
 @EnableTransactionManagement
 @ComponentScan({ "com.crsms.*" })
-@PropertySource(value = { "classpath:db/postgresql.properties" })
-@Import({ SecurityConfig.class, SpringWebAppInitializer.class })
+@PropertySource(value = { "classpath:postgresql.properties"})
+@Import({ SecurityConfig.class})
 
 public class ApplicationContextConfig {
 
 	@Autowired
 	private Environment environment;
 
-	@Bean(name = "sessionFactory")
-	public SessionFactory sessionFactory() {
-		LocalSessionFactoryBuilder builder = new LocalSessionFactoryBuilder(
-				dataSource());
-		builder.scanPackages("com.crsms.domain").addProperties(
-				hibernateProperties());
-
-		return builder.buildSessionFactory();
-	}
+	 @Bean
+	    @Autowired
+	    public LocalSessionFactoryBean sessionFactory() {
+	        LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+	        sessionFactory.setDataSource(dataSource());
+	        sessionFactory.setPackagesToScan(new String[] { "com.crsms.domain" });
+	        sessionFactory.setHibernateProperties(hibernateProperties());
+	        return sessionFactory;
+	     }
 
 	@Bean(name = "dataSource")
 	public DataSource dataSource() {
@@ -58,9 +53,9 @@ public class ApplicationContextConfig {
 				.getRequiredProperty("database.username"));
 		dataSource.setPassword(environment
 				.getRequiredProperty("database.password"));
-		return dataSource;
+				return dataSource;
 	}
-
+		
 	private Properties hibernateProperties() {
 		Properties properties = new Properties();
 		properties.put("hibernate.dialect",
@@ -77,21 +72,26 @@ public class ApplicationContextConfig {
 				environment.getRequiredProperty("hibernate.cache.region.factory_class"));
 		properties.put("hibernate.hbm2ddl.auto",
 				environment.getRequiredProperty("hibernate.hbm2ddl.auto"));
+		properties.put("hibernate.hbm2ddl.import_files",
+				environment.getRequiredProperty("hibernate.hbm2ddl.import_files"));
 		return properties;
 	}
 	
+	@Bean(name = "transactionManager")
+	public HibernateTransactionManager getTransactionManager(
+			SessionFactory sessionFactory) {
+		HibernateTransactionManager transactionManager = new HibernateTransactionManager(
+				sessionFactory);
 
-	@Bean
-	public HibernateTransactionManager txManager() {
-		return new HibernateTransactionManager(sessionFactory());
+		return transactionManager;
 	}
 
-	@Bean
-	public InternalResourceViewResolver viewResolver() {
-		InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-		viewResolver.setViewClass(JstlView.class);
-		viewResolver.setPrefix("/WEB-INF/pages/");
-		viewResolver.setSuffix(".jsp");
-		return viewResolver;
-	}
+//	@Bean
+//	public InternalResourceViewResolver viewResolver() {
+//		InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
+//		viewResolver.setViewClass(JstlView.class);
+//		viewResolver.setPrefix("/WEB-INF/pages/");
+//		viewResolver.setSuffix(".jsp");
+//		return viewResolver;
+//	}
 }
