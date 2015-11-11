@@ -5,6 +5,7 @@
 <div align="center">
 <a href = "areas" class="btn btn-success"><spring:message code = "crsms.area.list"/></a>
 <a href = "courses/" class="btn btn-success"><spring:message code = "crsms.courses.text.courses"/></a>
+<a href = "admin/" class="btn btn-success"><spring:message code = "crsms.admin.title.list"/></a>
 <a href = "signin" class="btn btn-success"><spring:message code = "crsms.index.login"/></a>
 <a href = "signUp" class="btn btn-success"><spring:message code = "crsms.signUp.signUp"/></a>
 </div>

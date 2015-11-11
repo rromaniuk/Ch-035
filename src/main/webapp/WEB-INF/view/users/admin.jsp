@@ -2,7 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<c:set var = "order"/>
+<c:set var = "order" value = "asc"/>
 <c:if test="${sessionScope['direction'] == null || sessionScope['direction'] == 'asc'}">
 <c:set var = "order" value = "desc"/>
 </c:if>
