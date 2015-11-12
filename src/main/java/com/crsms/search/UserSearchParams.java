@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import com.crsms.domain.Role;
 
 @Component
-@Scope(value ="session")
+//@Scope(value ="session")
 public class UserSearchParams extends AbstractSearchParams {
 
 	public enum SearchField {
