@@ -49,6 +49,13 @@ public class AdminController {
 						@RequestParam (value = "direction", required = false, defaultValue = "asc") String direction,
 						HttpSession session, ModelMap model) {
 		
+		Long rowsCount = userService.getRowsCount();
+		int offset = (page - 1) * ITEMSPERPAGE;
+		int lastpage = (int) ((rowsCount / ITEMSPERPAGE));
+		if (rowsCount > (lastpage * ITEMSPERPAGE)) {
+			lastpage++;
+		}
+		
 		if (session.getAttribute("direction") == null) {
 			session.setAttribute("direction", direction);
 		}
@@ -68,25 +75,18 @@ public class AdminController {
 			sortingField = (String) session.getAttribute("sortparam");
 		}
 		
-		long rowsCount = userService.getRowsCount();
-		int lastpage = (int) ((rowsCount / ITEMSPERPAGE));
-		if (rowsCount > (lastpage * ITEMSPERPAGE))
-		{
-			lastpage++;
-		}
-		int startPosition = (page - 1) * ITEMSPERPAGE;
 		
-		System.out.println("startposition in getPagingUsers: " + startPosition);
+		System.out.println("startposition in getPagingUsers: " + offset);
 		System.out.println("sortingField in getPagingUsers: " + sortingField);
 		System.out.println("order in getPagingUsers: " + order);
+		
+		
 
-		List<User> users = userService.getPagingUsers(startPosition, ITEMSPERPAGE, sortingField, order);
+		List<User> users = userService.getPagingUsers(offset, ITEMSPERPAGE, sortingField, order);
 		model.addAttribute("lastpage", lastpage);
 		model.addAttribute("page", page);
 		model.addAttribute("users", users);
 		return "admin";
-		
-		
 	}
 	
 	@RequestMapping(value = { "/delete/{userId}" }, method = RequestMethod.GET)

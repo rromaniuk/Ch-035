@@ -22,7 +22,9 @@ public interface UserDao {
 
 	List<User> getAllUsers();
 	
-	long getRowsCount();
+	Long getRowsCount();
 	
 	List<User> getPagingUsers(int startPosition, int itemsPerPage, String sortingField, String order);
+	
+	List <User> searchByKeyword(String keyword);
 }

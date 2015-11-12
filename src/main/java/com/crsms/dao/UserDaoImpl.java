@@ -9,9 +9,12 @@ import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -106,10 +109,10 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public long getRowsCount() {
-		long rowsCount = 0;
+	public Long getRowsCount() {
+		Long rowsCount = null;
 		try {
-			rowsCount = (long) sessionFactory.getCurrentSession()
+			rowsCount = (Long) sessionFactory.getCurrentSession()
 					.createCriteria(User.class)
 					.setProjection(Projections.rowCount()).uniqueResult();
 		} catch (Exception e) {
@@ -121,19 +124,19 @@ public class UserDaoImpl implements UserDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<User> getPagingUsers(int startPosition, int itemsPerPage,
+	public List<User> getPagingUsers(int offset, int itemsPerPage,
 			String sortingField, String order) {
 		List<User> users = new ArrayList<>();
-		
+
 		try {
 			Criteria criteria = sessionFactory.getCurrentSession()
 					.createCriteria(User.class);
-			if (sortingField!= null && order.equals("asc")){
+			if (sortingField != null && order.equals("asc")) {
 				criteria.addOrder(Order.asc(sortingField));
-			} else	{
+			} else {
 				criteria.addOrder(Order.desc(sortingField));
 			}
-			criteria.setFirstResult(startPosition);
+			criteria.setFirstResult(offset);
 			criteria.setMaxResults(itemsPerPage);
 			users.addAll(criteria.list());
 		} catch (Exception e) {
@@ -142,4 +145,19 @@ public class UserDaoImpl implements UserDao {
 		return users;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<User> searchByKeyword(String keyword) {
+		List<User> users = new ArrayList<>();
+		if (!keyword.equals("")) {
+			Criteria criteria = sessionFactory.getCurrentSession()
+					.createCriteria(User.class);
+			Disjunction or = Restrictions.disjunction();
+			or.add(Restrictions.ilike("email", keyword, MatchMode.ANYWHERE));
+			or.add(Restrictions.ilike("role", keyword, MatchMode.ANYWHERE));
+			criteria.add(or);
+			users.addAll(criteria.list());
+		}
+		return users;
+	}
 }

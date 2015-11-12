@@ -16,17 +16,15 @@
         </div>
         <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Find</button>
       </form>
-      <ul class="nav navbar-nav navbar-right">
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" 
-          	aria-haspopup="true" aria-expanded="false">${order}<span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li ><a href="#">5</a></li>
-            <li><a href="#">10</a></li>
-            <li><a href="#">15</a></li>
-          </ul>
-        </li>
-      </ul>
+      <div class="nav navbar-nav navbar-right">
+								<label for="pageSize">Rows:</label> 
+									<select id="pageSize" class="form-control input-sm" >
+											<option value="3">3</option>
+											<option value="5">5</option>
+											<option value="10">10</option>
+											<option value="15">15</option>
+									</select>
+								</div>
     </div>
 </nav>
 	<table class="table table-bordered table-hover">

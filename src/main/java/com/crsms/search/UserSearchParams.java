@@ -1,31 +1,37 @@
 package com.crsms.search;
 
-import com.crsms.domain.User;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
-public class UserSearchParams extends AbstractSearchParams<User> {
+import com.crsms.domain.Role;
 
-	public enum UserSearchType {
+@Component
+@Scope(value ="session")
+public class UserSearchParams extends AbstractSearchParams {
+
+	public enum SearchField {
 		BY_EMAIL, BY_ROLE
 	};
 
-	private UserSearchType searchType = UserSearchType.BY_EMAIL;
-	private int id;
+	private SearchField emailField = SearchField.BY_EMAIL;
 	private String email;
+	private Role role;
+	
 
-	public UserSearchType getSearchType() {
-		return searchType;
+	public SearchField getSearchField() {
+		return emailField;
 	}
 
-	public void setSearchType(UserSearchType searchType) {
-		this.searchType = searchType;
+	public void setSearchField(SearchField searchField) {
+		this.emailField = searchField;
 	}
 
-	public int getId() {
-		return id;
+	public Role getRole() {
+		return role;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setRole(Role role) {
+		this.role = role;
 	}
 
 	public String getEmail() {

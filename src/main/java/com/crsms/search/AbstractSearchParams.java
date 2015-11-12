@@ -2,16 +2,16 @@ package com.crsms.search;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.crsms.dao.GenericDao;
+import com.crsms.dao.UserDao;
 
-public abstract class AbstractSearchParams<T> {
+public abstract class AbstractSearchParams {
 	
 	private String direction = "asc";
-	private Integer itemsPerPage = 4;
-	private Integer rowsCount = null;
+	private final Integer itemsPerPage = 4;
+	private Long rowsCount = null;
 
 	@Autowired
-	private GenericDao<T> genericDao;
+	private UserDao userDao;
 	
 	public String getDirection() {
 		return direction;
@@ -25,15 +25,7 @@ public abstract class AbstractSearchParams<T> {
 		return itemsPerPage;
 	}
 
-	public void setItemsPerPage(Integer itemsPerPage) {
-		this.itemsPerPage = itemsPerPage;
-	}
-
-	public Integer getRowsCount() {
-		return genericDao.getRowsCount();
-	}
-
-	public void setRowsCount(Integer rowsCount) {
-		this.rowsCount = rowsCount;
+	public Long getRowsCount() {
+		return userDao.getRowsCount();
 	}
 }

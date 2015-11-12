@@ -18,6 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.crsms.dao.RoleDao;
 import com.crsms.dao.UserDao;
 import com.crsms.domain.User;
+import com.crsms.search.AbstractSearchParams;
+import com.crsms.search.AbstractSearchResult;
+import com.crsms.search.UserSearchParams;
+import com.crsms.search.UserSearchParams.SearchField;
 
 /**
  * 
@@ -32,6 +36,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private UserSearchParams userSearch;
 
 	@Autowired
 	private UserDao userDao;
@@ -116,13 +123,29 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public long getRowsCount() {
+	public Long getRowsCount() {
 		return userDao.getRowsCount();
 	}
 
 	@Override
 	public List<User> getPagingUsers(int startPosition, int itemsPerPage, String sortingField, String order) {
+		
+		
+		
+		
+		
 		return userDao.getPagingUsers(startPosition, itemsPerPage, sortingField, order);
+	}
+	
+	@Override
+	public AbstractSearchResult<User> search(UserSearchParams userSearch) {
+		SearchField searchField = userSearch.getSearchField();
+		String direction = userSearch.getDirection();
+		 List<User> result = null;
+		 if (searchField == SearchField.BY_EMAIL) {
+			 result = userDao.searchByKeyword(userSearch.getEmail());
+		 }
+		return null;
 	}
 	
 	@Override
@@ -138,4 +161,6 @@ public class UserServiceImpl implements UserService {
 		}
 		return users;
 	}
+
+	
 }
