@@ -31,8 +31,6 @@ public interface UserService {
 	Long getRowsCount();
 	
 	List<User> getPagingUsers(int startPosition, int itemsPerPage, String sortingField, String order);
-	
-	AbstractSearchResult<User> search(UserSearchParams userSearch);
 
 	List<User> getAllWithInitializedCourses();
 

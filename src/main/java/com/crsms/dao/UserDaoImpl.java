@@ -19,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.crsms.domain.User;
+import com.crsms.search.AbstractSearchParams;
+import com.crsms.search.UserSearchParams;
 
 /**
  * 
@@ -160,4 +162,5 @@ public class UserDaoImpl implements UserDao {
 		}
 		return users;
 	}
+
 }

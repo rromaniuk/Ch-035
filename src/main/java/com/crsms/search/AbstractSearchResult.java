@@ -25,8 +25,8 @@ public abstract class AbstractSearchResult<T> {
 		return abstractSearchParams.getItemsPerPage();
 	}
 
-	public Long getRowsCount() {
-		return abstractSearchParams.getRowsCount();
+	public Integer getRowsCount() {
+		return rowsCount;
 	}
 
 	private void setRowsCount(int rowsCount) {

@@ -21,7 +21,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.crsms.domain.Role;
 import com.crsms.domain.User;
+import com.crsms.search.UserSearchParams;
 import com.crsms.service.RoleService;
+import com.crsms.service.UserPaginatorService;
 import com.crsms.service.UserService;
 import com.crsms.validator.AdminValidator;
 /**
@@ -32,9 +34,13 @@ import com.crsms.validator.AdminValidator;
 @Controller
 @RequestMapping(value = "/admin")
 public class AdminController {
-	public static final int ITEMSPERPAGE = 4;
+//	public static final int ITEMSPERPAGE = 4;
+	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private UserPaginatorService userPaginatorService;
 	
 	@Autowired
 	private RoleService roleService;
@@ -43,51 +49,65 @@ public class AdminController {
 	private AdminValidator validator;
 	
 	@RequestMapping(method = RequestMethod.GET)
-	public String getAllUsers(
-						@RequestParam (value = "page", required = false, defaultValue = "1") int page,
-						@RequestParam (value = "sortparam", required = false, defaultValue = "email") String sortParam,
-						@RequestParam (value = "direction", required = false, defaultValue = "asc") String direction,
-						HttpSession session, ModelMap model) {
-		
-		Long rowsCount = userService.getRowsCount();
-		int offset = (page - 1) * ITEMSPERPAGE;
-		int lastpage = (int) ((rowsCount / ITEMSPERPAGE));
-		if (rowsCount > (lastpage * ITEMSPERPAGE)) {
-			lastpage++;
-		}
-		
-		if (session.getAttribute("direction") == null) {
-			session.setAttribute("direction", direction);
-		}
-
-		String order = (String) session.getAttribute("direction");
-		if (session.getAttribute("sortparam") != null ) {
-			order = direction;
-			session.setAttribute("direction", order);
-		} 
-		
-		String sortingField = (String) session.getAttribute("sortparam");
-		if (sortingField == null) {
-			session.setAttribute("sortparam", sortParam);
-			sortingField = (String) session.getAttribute("sortparam");
-		} else {
-			session.setAttribute("sortparam", sortParam);
-			sortingField = (String) session.getAttribute("sortparam");
-		}
-		
-		
-		System.out.println("startposition in getPagingUsers: " + offset);
-		System.out.println("sortingField in getPagingUsers: " + sortingField);
-		System.out.println("order in getPagingUsers: " + order);
-		
-		
-
-		List<User> users = userService.getPagingUsers(offset, ITEMSPERPAGE, sortingField, order);
-		model.addAttribute("lastpage", lastpage);
-		model.addAttribute("page", page);
-		model.addAttribute("users", users);
-		return "admin";
-	}
+    public String admin(@ModelAttribute UserSearchParams params, ModelMap model) {
+    	
+    	List<User> users = null;
+    	
+    	if (params.isEmpty())
+    		params.setDefaults();
+    	
+    	users = userPaginatorService.getPaginatedResult(params);
+    	
+        model.addAttribute("users", users);
+           return "admin";
+    }
+	
+//	@RequestMapping(method = RequestMethod.GET)
+//	public String getAllUsers(
+//						@RequestParam (value = "page", required = false, defaultValue = "1") int page,
+//						@RequestParam (value = "sortparam", required = false, defaultValue = "email") String sortParam,
+//						@RequestParam (value = "direction", required = false, defaultValue = "asc") String direction,
+//						HttpSession session, ModelMap model) {
+//		
+//		Long rowsCount = userService.getRowsCount();
+//		int offset = (page - 1) * ITEMSPERPAGE;
+//		int lastpage = (int) ((rowsCount / ITEMSPERPAGE));
+//		if (rowsCount > (lastpage * ITEMSPERPAGE)) {
+//			lastpage++;
+//		}
+//		
+//		if (session.getAttribute("direction") == null) {
+//			session.setAttribute("direction", direction);
+//		}
+//
+//		String order = (String) session.getAttribute("direction");
+//		if (session.getAttribute("sortparam") != null ) {
+//			order = direction;
+//			session.setAttribute("direction", order);
+//		} 
+//		
+//		String sortingField = (String) session.getAttribute("sortparam");
+//		if (sortingField == null) {
+//			session.setAttribute("sortparam", sortParam);
+//			sortingField = (String) session.getAttribute("sortparam");
+//		} else {
+//			session.setAttribute("sortparam", sortParam);
+//			sortingField = (String) session.getAttribute("sortparam");
+//		}
+//		
+//		
+//		System.out.println("startposition in getPagingUsers: " + offset);
+//		System.out.println("sortingField in getPagingUsers: " + sortingField);
+//		System.out.println("order in getPagingUsers: " + order);
+//		
+//		
+//
+//		List<User> users = userService.getPagingUsers(offset, ITEMSPERPAGE, sortingField, order);
+//		model.addAttribute("lastpage", lastpage);
+//		model.addAttribute("page", page);
+//		model.addAttribute("users", users);
+//		return "admin";
+//	}
 	
 	@RequestMapping(value = { "/delete/{userId}" }, method = RequestMethod.GET)
 	public String deleteUser(@PathVariable long userId) {
