@@ -62,12 +62,12 @@ class WebConfig extends WebMvcConfigurationSupport {
         return new StandardServletMultipartResolver();
     }
     
-    @Bean(name="simpleMappingExceptionResolver")
-    public SimpleMappingExceptionResolver createSimpleMappingExceptionResolver() {
-        SimpleMappingExceptionResolver resolver = new SimpleMappingExceptionResolver();
-        resolver.setDefaultErrorView("errorpage");
-        return resolver;
-    }
+//    @Bean(name="simpleMappingExceptionResolver")
+//    public SimpleMappingExceptionResolver createSimpleMappingExceptionResolver() {
+//        SimpleMappingExceptionResolver resolver = new SimpleMappingExceptionResolver();
+//        resolver.setDefaultErrorView("errorpage");
+//        return resolver;
+//    }
     
     
  

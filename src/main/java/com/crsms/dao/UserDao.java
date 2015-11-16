@@ -3,6 +3,7 @@ package com.crsms.dao;
 import java.util.List;
 
 import com.crsms.domain.User;
+import com.crsms.search.SearchParams;
 import com.crsms.search.UserSearchParams;
 
 /**
@@ -30,4 +31,6 @@ public interface UserDao {
 	List<User> getPagingUsers(int startPosition, int itemsPerPage, String sortingField, String order);
 	
 	List <User> searchByKeyword(String keyword);
+
+	List<User> getPagingUsers(UserSearchParams params);
 }

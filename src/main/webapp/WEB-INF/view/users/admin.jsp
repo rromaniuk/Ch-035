@@ -3,11 +3,10 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 <c:set var = "order" value = "asc"/>
-<c:if test="${sessionScope['direction'] == null || sessionScope['direction'] == 'asc'}">
+<c:if test="${sessionScope['scopedTarget.UserSearchParams'].direction == null || sessionScope['scopedTarget.UserSearchParams'].direction == 'asc'}">
 <c:set var = "order" value = "desc"/>
 </c:if>
 <c:if test="${!empty users}">
-
 <nav class="navbar navbar-default">
     <div class="container-fluid">
        <form class="navbar-form navbar-left" role="search">
@@ -19,7 +18,7 @@
       <div class="nav navbar-nav navbar-right">
 								<label for="pageSize">Rows:</label> 
 									<select id="pageSize" class="form-control input-sm" >
-											<option value="3">3</option>
+											<option value="3"><c:out value="${sessionScope['scopedTarget.userSearchParams'].page}" /></option>
 											<option value="5">5</option>
 											<option value="10">10</option>
 											<option value="15">15</option>
@@ -32,13 +31,17 @@
 			<tr class="success">
 				<th ><spring:message code="crsms.text.id" /></th>
 				<th> <spring:message code="crsms.admin.email" />
-					<a href="<c:url value="?page=${page}&sortparam=email&direction=${order}"/>">
+					<a href="<c:url value="?page=${page}
+											&sortparam=${email}
+											&direction=${order}"/>">
 					<i class="glyphicon glyphicon-sort" aria-hidden="true"></i>
 					</a>
 				</th>
 				<th><spring:message code="crsms.admin.password" /></th>
 				<th><spring:message code="crsms.admin.role" />
-					<a href="<c:url value="?page=${page}&sortparam=role&direction=${order}"/>">
+					<a href="<c:url value="?page=${page}
+											&sortparam=${role}
+											&direction=${order}"/>">
 					<i class="glyphicon glyphicon-sort" aria-hidden="true"></i>
 					</a>
 				</th>
@@ -105,7 +108,8 @@
 					</a>
 				</li>
 				<li>
-					<a	href="<c:url value="/admin?page=${page - 1}&sortparam=${sessionScope['sortparam']}
+					<a	href="<c:url value="/admin?page=${page - 1}
+											&sortparam=${sessionScope['sortparam']}
 											&direction=${sessionScope['direction']}"/>" 
 						data-toggle="tooltip"
 						title="<spring:message code="crsms.paginationlogic.tooltip.previous" />"> 
@@ -114,7 +118,7 @@
 				</li>
 			</c:when>
 		</c:choose>
-			<c:forEach var="p" begin="1" end="${lastpage}">
+			<c:forEach var="p" begin="1" end="${pagesCount}">
 				<li	<c:choose>
 						<c:when test="${p == page}"> 
 							class = "active"
@@ -127,7 +131,7 @@
 				</li>			
 			</c:forEach>
 			<c:choose>
-			<c:when test="${page == lastpage}">
+			<c:when test="${page == pagesCount}">
 				<li class="disabled">
 					<a	href="<c:url value="#"/>"	
 						data-toggle="tooltip"
@@ -143,7 +147,7 @@
 					</a>
 				</li>
 			</c:when>		
-			<c:when test="${page < lastpage}">
+			<c:when test="${page < pagesCount}">
 				<li>
 					<a	href="<c:url value="/admin?page=${page + 1}&sortparam=${sessionScope['sortparam']}
 											&direction=${sessionScope['direction']}"/>" 
@@ -153,7 +157,7 @@
 					</a>
 				</li>
 				<li>
-					<a href="<c:url value="/admin?page=${lastpage}&sortparam=${sessionScope['sortparam']}
+					<a href="<c:url value="/admin?page=${pagesCount}&sortparam=${sessionScope['sortparam']}
 											&direction=${sessionScope['direction']}"/>"  
 						data-toggle="tooltip"
 						title="<spring:message code="crsms.paginationlogic.tooltip.last" />"> 

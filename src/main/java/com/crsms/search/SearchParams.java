@@ -1,22 +1,34 @@
-package com.crsms.search;
 
-public abstract class AbstractSearchParams {
+package com.crsms.search;
+import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+import com.crsms.dao.UserDao;
+
+@Component
+@Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
+public class SearchParams {
 
 	private static final Integer DEFAULTITEMSPERPAGE = 4;
-	private String direction;
 	private Integer page;
-	private String sortField;
 	private Integer itemsPerPage;
-	
+	private Integer pagesCount;
+	private Integer offSet;
+	private String sortField;
+	private String direction;
+
 	public Boolean isEmpty() {
-		return direction == null || page == null || sortField == null;
+		return direction == null || page == null || itemsPerPage == null;
 	}
 
 	public void setDefaults() {
 		direction = "asc";
 		page = 1;
-		sortField = "email";
 		itemsPerPage = DEFAULTITEMSPERPAGE;
+		
 	}
 
 	public String getDirection() {
@@ -52,11 +64,15 @@ public abstract class AbstractSearchParams {
 	}
 
 	public int getOffset() {
-		return (this.getPage() - 1) * this.getItemsPerPage();
+		return  (page - 1) * getItemsPerPage();
 	}
 
-	public void setOffSet(Integer offSet) {
+	public int getPagesCount() {
+		return pagesCount;
 	}
 
-	public abstract Long getRowsCount();
+	public void setPagesCount(Integer pagesCount) {
+		this.pagesCount = pagesCount;
+	}
+
 }

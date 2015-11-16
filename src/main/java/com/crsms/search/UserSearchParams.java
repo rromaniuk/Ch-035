@@ -8,30 +8,19 @@ import com.crsms.domain.Role;
 import com.crsms.service.UserService;
 
 @Component
-//@Scope(value ="session")
-public class UserSearchParams extends AbstractSearchParams {
+public class UserSearchParams extends SearchParams {
 	
 	@Autowired
 	private UserService userService;
 	private String email;
-	private Role role;
-	private Long rowsCount; 
+	private String role;
+//	private Long rowsCount;
 	
 	public void setDefaults() {
     	super.setDefaults();
 		setSortField("email");
-		setSortField(role.getName());
-    	email = null;
     }
 	
-	public Role getRole() {
-		return role;
-	}
-
-	public void setRole(Role role) {
-		this.role = role;
-	}
-
 	public String getEmail() {
 		return email;
 	}
@@ -39,9 +28,8 @@ public class UserSearchParams extends AbstractSearchParams {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
-	@Override
-	public Long getRowsCount() {
-		return userService.getRowsCount();
-	}
+
+//	public Long getRowsCount() {
+//		return userService.getRowsCount();
+//	}
 }

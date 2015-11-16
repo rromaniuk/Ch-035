@@ -23,7 +23,7 @@ import com.crsms.domain.Role;
 import com.crsms.domain.User;
 import com.crsms.search.UserSearchParams;
 import com.crsms.service.RoleService;
-import com.crsms.service.UserPaginatorService;
+import com.crsms.service.PaginatorService;
 import com.crsms.service.UserService;
 import com.crsms.validator.AdminValidator;
 /**
@@ -40,25 +40,25 @@ public class AdminController {
 	private UserService userService;
 	
 	@Autowired
-	private UserPaginatorService userPaginatorService;
+	private PaginatorService<User> paginatorService;
 	
 	@Autowired
 	private RoleService roleService;
 	
 	@Autowired
+	private UserSearchParams params;
+	
+	@Autowired
 	private AdminValidator validator;
 	
 	@RequestMapping(method = RequestMethod.GET)
-    public String admin(@ModelAttribute UserSearchParams params, ModelMap model) {
-    	
+    public String admin(ModelMap model) {
     	List<User> users = null;
-    	
     	if (params.isEmpty())
     		params.setDefaults();
-    	
-    	users = userPaginatorService.getPaginatedResult(params);
-    	
+    	users = paginatorService.getPaginatedResult(params);
         model.addAttribute("users", users);
+        model.addAttribute("params", params);
            return "admin";
     }
 	
@@ -94,13 +94,6 @@ public class AdminController {
 //			session.setAttribute("sortparam", sortParam);
 //			sortingField = (String) session.getAttribute("sortparam");
 //		}
-//		
-//		
-//		System.out.println("startposition in getPagingUsers: " + offset);
-//		System.out.println("sortingField in getPagingUsers: " + sortingField);
-//		System.out.println("order in getPagingUsers: " + order);
-//		
-//		
 //
 //		List<User> users = userService.getPagingUsers(offset, ITEMSPERPAGE, sortingField, order);
 //		model.addAttribute("lastpage", lastpage);

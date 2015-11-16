@@ -12,11 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.crsms.domain.User;
-import com.crsms.search.AbstractSearchParams;
+import com.crsms.search.SearchParams;
 import com.crsms.search.UserSearchParams;
 
 @Repository
-public class PaginatorDaoImpl implements PaginatorDao {
+public class PaginatorDaoImpl<T> implements PaginatorDao<T> {
 	private static Logger log = LogManager.getLogger(PaginatorDaoImpl.class);
 	
 	@Autowired
@@ -24,8 +24,8 @@ public class PaginatorDaoImpl implements PaginatorDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<User> getPaginatedResult(AbstractSearchParams params) {
-		List<User> users = new ArrayList<>();
+	public List<T> getPaginatedResult(SearchParams params) {
+		List<T> users = new ArrayList<>();
 		try {
 			Criteria criteria = sessionFactory.getCurrentSession()
 					.createCriteria(User.class);
@@ -35,8 +35,6 @@ public class PaginatorDaoImpl implements PaginatorDao {
 			} else {
 				criteria.addOrder(Order.desc(params.getSortField()));
 			}
-			criteria.setFirstResult(params.getOffset());
-			criteria.setMaxResults(params.getItemsPerPage());
 			users.addAll(criteria.list());
 		} catch (Exception e) {
 			log.error("Error getPagingUsers " + e);

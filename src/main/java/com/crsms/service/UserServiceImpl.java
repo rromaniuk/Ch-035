@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.crsms.dao.RoleDao;
 import com.crsms.dao.UserDao;
 import com.crsms.domain.User;
+import com.crsms.search.Paginator;
 import com.crsms.search.UserSearchParams;
 
 /**
@@ -33,7 +34,7 @@ public class UserServiceImpl implements UserService {
 	private PasswordEncoder passwordEncoder;
 	
 	@Autowired
-	private UserSearchParams userSearch;
+	private UserSearchParams params;
 
 	@Autowired
 	private UserDao userDao;
@@ -141,6 +142,5 @@ public class UserServiceImpl implements UserService {
 		}
 		return users;
 	}
-
 	
 }

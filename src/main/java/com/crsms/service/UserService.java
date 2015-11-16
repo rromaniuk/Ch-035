@@ -4,8 +4,8 @@ package com.crsms.service;
 import java.util.List;
 
 import com.crsms.domain.User;
-import com.crsms.search.AbstractSearchParams;
-import com.crsms.search.AbstractSearchResult;
+import com.crsms.search.SearchParams;
+import com.crsms.search.Paginator;
 import com.crsms.search.UserSearchParams;
 /**
  * 
@@ -31,7 +31,7 @@ public interface UserService {
 	Long getRowsCount();
 	
 	List<User> getPagingUsers(int startPosition, int itemsPerPage, String sortingField, String order);
-
+	
 	List<User> getAllWithInitializedCourses();
 
 }
