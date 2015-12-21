@@ -16,6 +16,7 @@ import com.crsms.domain.Role;
 import com.crsms.domain.User;
 import com.crsms.domain.UserInfo;
 import com.crsms.util.Invocable;
+import com.crsms.util.PageParams;
 
 /**
  * 
@@ -128,6 +129,19 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements UserServic
 									String sortingField, String order, String keyWord) {
 		return userDao.getPagingUsers(offSet, itemsPerPage, 
 									sortingField, order, keyWord);
+	}
+	
+	@Override
+	public List<User> getSearchResult(PageParams pageParams,
+			String sortingField, String order, String keyWord) {
+		
+		pageParams.setOffset((pageParams.getPage() - 1) * pageParams.getItemsPerPage());
+		pageParams.setRowsCount(userDao.getRowsCount(keyWord));
+		pageParams.setLastPage ((int) ((pageParams.getRowsCount() / pageParams.getItemsPerPage())));
+		
+		if (pageParams.getRowsCount() > (pageParams.getLastPage() * pageParams.getItemsPerPage())) 
+			pageParams.setLastPage (pageParams.getLastPage()+1);
+		return userDao.getSearchResult(pageParams, sortingField, keyWord);
 	}
 
 	@Override

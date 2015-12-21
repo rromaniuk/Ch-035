@@ -25,6 +25,7 @@ import com.crsms.domain.User;
 import com.crsms.service.RoleService;
 import com.crsms.service.TeacherRequestService;
 import com.crsms.service.UserService;
+import com.crsms.util.PageParams;
 import com.crsms.validator.AdminValidator;
 /**
  * 
@@ -37,6 +38,9 @@ public class AdminController {
 //	public static final int ITEMSPERPAGE = 6;
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private PageParams pageParams;
 	
 	@Autowired
 	private RoleService roleService;
@@ -54,12 +58,13 @@ public class AdminController {
 						@RequestParam (value = "direction", required = false, defaultValue = "asc") String direction,
 						@RequestParam (value = "keyWord",required = false, defaultValue = "")String keyWord,
 						@RequestParam (value = "itemsperpage", required = false, defaultValue = "6") int itemsPerPage,
-						HttpSession session, ModelMap model) {
+						@ModelAttribute PageParams pageParams,	HttpSession session, ModelMap model) {
 		
-		if (session.getAttribute("direction") == null) {
+		if (session.getAttribute("direction") == null)
 			session.setAttribute("direction", direction);
-		}
-
+		if (pageParams.checkIsEmptyParams())
+			pageParams.setDefaultParams();
+		
 		int offSet = (page - 1) * itemsPerPage;
 		long rowsCount = userService.getRowsCount(keyWord);
 		long usersToApproveCount = userService.getUsersToApproveCount();
@@ -85,8 +90,7 @@ public class AdminController {
 			sortingField = (String) session.getAttribute("sortparam");
 		}
 		
-		List<User> users = userService.getPagingUsers(
-				offSet, itemsPerPage, sortingField, order, keyWord);
+		List<User> users = userService.getSearchResult(pageParams, sortingField, order, keyWord);
 
 		List<TeacherRequest> requests = requestService.getRequestsHistory();
 		List<User> usersToApprove = userService.getUsersToApprove(true);

@@ -3,6 +3,8 @@ package com.crsms.dao;
 import java.util.List;
 
 import com.crsms.domain.User;
+import com.crsms.util.PageParams;
+
 import org.joda.time.DateTime;
 /**
  * 
@@ -22,6 +24,9 @@ public interface UserDao extends BaseDao<User> {
 	long getUsersToApproveCount();
 	
 	List<User> getUsersToApprove(Boolean teacherRequest);
+
+	List<User> getSearchResult(PageParams pageParams, String sortingField,
+			 String keyWord);
 
 	
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.crsms.domain.User;
 import com.crsms.util.Invocable;
+import com.crsms.util.PageParams;
 /**
  * 
  * @author Roman Romaniuk
@@ -33,4 +34,8 @@ public interface UserService extends BaseService<User> {
 							String sortingField, String order, String keyWord);
 	
 	List<User> getUsersToApprove(Boolean teacherRequest);
+
+	List<User> getSearchResult(PageParams pageParams, String sortingField,
+			String order, String keyWord);
+	
 }

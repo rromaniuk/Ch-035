@@ -8,6 +8,8 @@
 <c:if test="${direction == null ||direction == 'asc'}">
 <c:set var = "order" value = "desc"/>
 </c:if>
+ <c:set var = "rows" value = "${pageParams.rowsCount}"/>
+  <c:set var = "page" value = "${pageParams.page}"/>
 <ul class="nav nav-tabs" role="tablist">
 	<li role="presentation" class="active">
 		<a id="get-all-tab"
@@ -16,7 +18,8 @@
 		   role="tab"
 		   data-toggle="tab">
 			<spring:message code = "crsms.admin.pane.get.all"/> 
-			<b><span class="badge badge-info">${rowscount}</span></b>
+			<b><span class="badge badge-info">${rows}</span></b>
+	
 		</a>
 	</li>
 	<c:if test="${usersToApproveCount != 0}">
@@ -241,7 +244,7 @@
 <div class="paginationlogic">
 	<ul class="pagination">
 		<c:choose>
-			<c:when test="${page == 1}">
+			<c:when test="${pageParams.page == 1}">
 				<li class="disabled">
 					<a href="<c:url value="#"/>" 
 						data-toggle="tooltip"
@@ -257,7 +260,7 @@
 					</a>
 				</li>
 			</c:when>
-			<c:when test="${page > 1}">
+			<c:when test="${pageParams.page > 1}">
 				<li>				
 					<a href="<c:url value="/admin?page=${1}&sortparam=${sessionScope['sortparam']}
 											&direction=${sessionScope['direction']}&keyWord=${keyWord}&itemsperpage=${itemsperpage}"/>" 
@@ -267,7 +270,7 @@
 					</a>
 				</li>
 				<li>
-					<a	href="<c:url value="/admin?page=${page - 1}&sortparam=${sessionScope['sortparam']}
+					<a	href="<c:url value="/admin?page=${pageParams.page - 1}&sortparam=${sessionScope['sortparam']}
 											&direction=${sessionScope['direction']}&keyWord=${keyWord}&itemsperpage=${itemsperpage}"/>" 
 						data-toggle="tooltip"
 						title="<spring:message code="crsms.paginationlogic.tooltip.previous" />"> 
@@ -276,9 +279,9 @@
 				</li>
 			</c:when>
 		</c:choose>
-			<c:forEach var="p" begin="1" end="${lastpage}">
+			<c:forEach var="p" begin="1" end="${pageParams.lastPage}">
 				<li	<c:choose>
-						<c:when test="${p == page}"> 
+						<c:when test="${p == pageParams.page}"> 
 							class = "active"
 						</c:when>
 					</c:choose>>
@@ -291,7 +294,7 @@
 			<c:choose>
 			<c:when test="${page < lastpage}">
 				<li>
-					<a	href="<c:url value="/admin?page=${page + 1}&sortparam=${sessionScope['sortparam']}
+					<a	href="<c:url value="/admin?page=${pageParams.page  + 1}&sortparam=${sessionScope['sortparam']}
 											&direction=${sessionScope['direction']}&keyWord=${keyWord}&itemsperpage=${itemsperpage}"/>" 
 						data-toggle="tooltip"
 						title="<spring:message code="crsms.paginationlogic.tooltip.next" />">

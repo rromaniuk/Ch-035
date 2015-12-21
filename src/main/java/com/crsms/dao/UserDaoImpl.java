@@ -16,6 +16,7 @@ import org.hibernate.sql.JoinType;
 import org.springframework.stereotype.Repository;
 
 import com.crsms.domain.User;
+import com.crsms.util.PageParams;
 
 import org.joda.time.DateTime;
 /**
@@ -126,6 +127,35 @@ public class UserDaoImpl extends BaseDaoImpl<User> implements UserDao {
 			throw e;
 		}
 		return users;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<User> getSearchResult(PageParams pageParams, String sortingField, String keyWord ){
+		
+			List<User> users = new ArrayList<>();
+			try {
+				Criteria criteria = this.getSessionFactory().getCurrentSession()
+						.createCriteria(User.class, "user")
+						.createAlias("user.role", "role")
+						.createAlias("user.userInfo", "userInfo")
+						.createAlias("user.teacherRequest", "teacherRequest", JoinType.LEFT_OUTER_JOIN);
+				if (!keyWord.equals("")) {
+						 criteria.add(setDisjunction(keyWord));
+					}
+				if (sortingField != null && (pageParams.getOrder()).equals("asc")) {
+					criteria.addOrder(Order.asc(sortingField));
+				} else {
+					criteria.addOrder(Order.desc(sortingField));
+				}
+				criteria.setFirstResult(pageParams.getOffset());
+				criteria.setMaxResults(pageParams.getItemsPerPage());
+				users.addAll(criteria.list());
+			} catch (Exception e) {
+				this.getLogger().error("Error getPagingUsers " + e);
+				throw e;
+			}
+			return users;
 	}
 	
 	@SuppressWarnings("unchecked")
