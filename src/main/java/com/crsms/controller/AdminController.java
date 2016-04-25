@@ -1,31 +1,26 @@
 package com.crsms.controller;
 
-import java.beans.PropertyEditorSupport;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpSession;
-
+import com.crsms.domain.Role;
+import com.crsms.domain.TeacherRequest;
+import com.crsms.domain.User;
+import com.crsms.dto.UserJsonDto;
+import com.crsms.service.DtoService;
+import com.crsms.service.RoleService;
+import com.crsms.service.TeacherRequestService;
+import com.crsms.service.UserService;
+import com.crsms.validator.AdminValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
-import com.crsms.domain.Role;
-import com.crsms.domain.TeacherRequest;
-import com.crsms.domain.User;
-import com.crsms.service.RoleService;
-import com.crsms.service.TeacherRequestService;
-import com.crsms.service.UserService;
-import com.crsms.validator.AdminValidator;
+import javax.servlet.http.HttpSession;
+import java.beans.PropertyEditorSupport;
+import java.util.ArrayList;
+import java.util.List;
 /**
  * 
  * @author Roman Romaniuk
@@ -43,9 +38,15 @@ public class AdminController {
 	
 	@Autowired
 	private AdminValidator validator;
+	@Autowired
+	private DtoService dtoService;
 	
 	@Autowired
 	private TeacherRequestService requestService;
+
+	private final String MANAGEMENT_PAGE = "admin";
+	private final String EDIT_PAGE = "edituser";
+	private final String REDIRECT_MANAGEMENT_PAGE = "redirect:/private/admin/";
 	
 	@RequestMapping(method = RequestMethod.GET)
 	public String getAllUsers(
@@ -95,31 +96,34 @@ public class AdminController {
 						requestService.getRequestsHistoryCount());
 		model.addAttribute("users",  userService.getPagingUsers(
 						offSet, itemsPerPage, sortingField, order, keyWord));
-		return "admin";
+		return MANAGEMENT_PAGE;
 	}
 	
 	@RequestMapping(value = { "/{userId}/delete" }, method = RequestMethod.GET)
 	public String deleteUser(@PathVariable long userId) {
 		User user = userService.getById(userId);
 		userService.delete(user);
-		return "redirect:/private/admin/";
+		return REDIRECT_MANAGEMENT_PAGE;
 	}
 	
 	@RequestMapping(value = { "/{userId}" }, method = RequestMethod.GET)
 	public String editUser(@PathVariable Long userId, ModelMap model) {
 		User user = userService.getById(userId);
-		model.addAttribute("user", user);
-		return "edituser";
+
+		UserJsonDto userJsonDto = dtoService.convert(user, UserJsonDto.class, User.class);
+
+		model.addAttribute("userJsonDto", userJsonDto);
+		return EDIT_PAGE;
 	}
 	
 	@RequestMapping(value = "/{userId}", method = RequestMethod.POST)
 	public String updateUser(@PathVariable long userId,@Validated User user, BindingResult result) {
 		validator.validate(user, result);
 		if (result.hasErrors()) {
-			return "edituser";
+			return EDIT_PAGE;
 		}
 		userService.update(user);
-		return "redirect:/private/admin/";
+		return REDIRECT_MANAGEMENT_PAGE;
 	}
 
 	@RequestMapping(value = { "/request/{requestId}" }, method = RequestMethod.GET)
@@ -133,7 +137,7 @@ public class AdminController {
 	public String updateRequest(@PathVariable long requestId, 
 			@RequestParam(value = "approve", required = false) boolean approve){
 		requestService.setApprovedStatus(requestId, approve);
-		return "redirect:/private/admin/#";
+		return REDIRECT_MANAGEMENT_PAGE +"/#";
 	}
 
 	@ModelAttribute("roles")
@@ -142,7 +146,7 @@ public class AdminController {
 		roles = roleService.getAllRoles();
 		return roles;
 	}
-	
+
 	class RoleEditor extends PropertyEditorSupport {
 		@Override
         public void setAsText(String text) {
