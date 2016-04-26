@@ -110,9 +110,9 @@ public class AdminController {
 	public String editUser(@PathVariable Long userId, ModelMap model) {
 		User user = userService.getById(userId);
 
-		UserJsonDto userJsonDto = dtoService.convert(user, UserJsonDto.class, User.class);
-
-		model.addAttribute("userJsonDto", userJsonDto);
+//		UserJsonDto userJsonDto = dtoService.convert(user, UserJsonDto.class, User.class);
+		model.addAttribute("user", user);
+//		model.addAttribute("userJsonDto", userJsonDto);
 		return EDIT_PAGE;
 	}
 	

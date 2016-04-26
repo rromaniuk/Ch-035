@@ -11,7 +11,8 @@
 	</div>
 	<div class="modal-body">
 		<form:form modelAttribute="user" method="POST" class="form-horizontal">
-			<form:input path="id" type="hidden" />
+			<%-- <form:input path="id" type="hidden" /> --%>
+			<form:hidden path = "id"/>
 
 			<div class="form-group ">
 				<c:set var="userEmail">
@@ -20,7 +21,7 @@
 				<label for="email" class="col-sm-2 control-label">${userEmail}:
 				</label>
 				<div class="col-sm-4">
-					<form:input path="email" id="email" class="form-control"
+					<form:input path="email" id="email" name = "email" class="form-control"
 						placeholder="${userEmail}" readonly ="true"/>
 					<form:errors path="email" cssClass="label label-danger" />
 				</div>
@@ -34,13 +35,13 @@
 				</label>
 				
 				<div class="col-sm-4">
-					<form:input type="password" path="password" id="password"
+					<form:input type="password" path="password" id="password" name = "password"
 						class="form-control" placeholder="${userPassword}" readonly ="true" />
 					<form:errors path="password" cssClass="label label-danger" />
 				</div>
 			</div>
 
-			<div class="form-group">
+			<%-- <div class="form-group">
 				<c:set var="userRole">
 					<spring:message code="crsms.createuser.role" />
 				</c:set>
@@ -51,7 +52,7 @@
 						itemLabel="name" class="form-control input-sm" />
 					<form:errors path="role" cssClass="label label-danger" />
 				</div>
-			</div>
+			</div> --%>
 			
 			<div class="form-group">
 				<div class="col-sm-offset-2 col-sm-4">

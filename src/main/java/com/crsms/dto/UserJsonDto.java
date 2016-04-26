@@ -3,6 +3,7 @@ package com.crsms.dto;
 import com.crsms.domain.Role;
 import com.crsms.domain.TeacherRequest;
 import com.crsms.domain.UserInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.googlecode.jmapper.annotations.JMap;
 
 public class UserJsonDto {
@@ -15,11 +16,11 @@ public class UserJsonDto {
     private String password;
     @JMap
     private boolean isEnabled;
-    @JMap
+    @JsonIgnore
     private UserInfo userInfo;
-    @JMap
+    @JsonIgnore
     private Role role;
-    @JMap
+    @JsonIgnore
     private TeacherRequest teacherRequest;
 
     public Long getId() {
@@ -46,7 +47,7 @@ public class UserJsonDto {
         this.password = password;
     }
 
-    public boolean isEnabled() {
+    public boolean getIsEnabled() {
         return isEnabled;
     }
 
